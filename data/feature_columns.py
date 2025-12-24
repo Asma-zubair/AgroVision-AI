@@ -1,0 +1,9 @@
+FEATURES = [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+]
