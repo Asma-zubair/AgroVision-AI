@@ -6,3 +6,5 @@ scikit-learn
 joblib
 python-dotenv
 groq
+tensorflow==2.15.0
+
