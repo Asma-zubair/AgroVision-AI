@@ -34,10 +34,11 @@ PARENT_DIR = os.path.dirname(BASE_DIR)  # Project root
 load_dotenv(os.path.join(PARENT_DIR, ".env"))
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found in .env")
 
-groq_client = Groq(api_key=GROQ_API_KEY)
+# Only initialize Groq client if key is present so that
+# the backend can still start and serve prediction endpoints
+# even when chatbot is not configured.
+groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
 # -------------------------------------------------
 # FastAPI App
@@ -85,20 +86,24 @@ def clean_name(name: str):
 # -------------------------------------------------
 # Crop Recommendation Endpoint
 # -------------------------------------------------
-@app.post("/predict-crop")
-def predict_crop(
-    soil_type: str,
-    season: str,
-    rainfall_level: str,
-    weather: str,
-    ph_range: str
-):
 
-    soil_type = normalize_input(soil_type, soil_npk_map)
-    season = normalize_input(season, season_map)
-    rainfall_level = normalize_input(rainfall_level, rainfall_map)
-    weather = normalize_input(weather, weather_map)
-    ph_range = normalize_input(ph_range, ph_map)
+
+class CropRequest(BaseModel):
+    soil_type: str
+    season: str
+    rainfall_level: str
+    weather: str
+    ph_range: str
+
+
+@app.post("/predict-crop")
+def predict_crop(data: CropRequest):
+
+    soil_type = normalize_input(data.soil_type, soil_npk_map)
+    season = normalize_input(data.season, season_map)
+    rainfall_level = normalize_input(data.rainfall_level, rainfall_map)
+    weather = normalize_input(data.weather, weather_map)
+    ph_range = normalize_input(data.ph_range, ph_map)
 
     if None in [soil_type, season, rainfall_level, weather, ph_range]:
         return {"error": "Invalid input value provided"}
@@ -170,6 +175,11 @@ class ChatRequest(BaseModel):
 # -------------------------------------------------
 @app.post("/chat")
 def agriculture_chat(data: ChatRequest):
+
+    if groq_client is None:
+        return {
+            "answer": "Chatbot is not configured on the server (missing GROQ_API_KEY). Crop and disease predictions still work."
+        }
 
     system_prompt = """
     You are a professional agriculture expert and farmer assistant.
