@@ -4,12 +4,24 @@ import joblib
 import pandas as pd
 import numpy as np
 import os
+import sys
 import json
 from groq import Groq
 from dotenv import load_dotenv
 import io
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+
+# -------------------------------------------------
+# Paths
+# -------------------------------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = BASE_DIR  # Backend directory
+PARENT_DIR = os.path.dirname(BASE_DIR)  # Project root
+
+# Ensure project root is on sys.path so "data" and "utils" can be imported
+if PARENT_DIR not in sys.path:
+    sys.path.insert(0, PARENT_DIR)
 
 from data.feature_columns import FEATURES
 from utils.normalizer import normalize_input
@@ -20,13 +32,6 @@ from utils.mappings import (
     weather_map,
     ph_map
 )
-
-# -------------------------------------------------
-# Paths
-# -------------------------------------------------
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = BASE_DIR  # Backend directory
-PARENT_DIR = os.path.dirname(BASE_DIR)  # Project root
 
 # -------------------------------------------------
 # Load .env
