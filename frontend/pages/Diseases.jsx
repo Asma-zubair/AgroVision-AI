@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../src/apiConfig";
 
 export default function Diseases() {
   const [image, setImage] = useState(null);
@@ -25,7 +26,7 @@ export default function Diseases() {
     formData.append("file", image);
 
     try {
-      const response = await fetch("/api/predict-disease", {
+      const response = await fetch(`${API_BASE_URL}/predict-disease`, {
         method: "POST",
         body: formData,
       });

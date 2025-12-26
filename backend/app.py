@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import pandas as pd
@@ -49,6 +50,22 @@ groq_client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 # FastAPI App
 # -------------------------------------------------
 app = FastAPI(title="Smart Agriculture API")
+
+# CORS so frontend on Vercel can call this API
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://agro-vision-ai-six.vercel.app",
+    "http://agro-vision-ai-six.vercel.app",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # -------------------------------------------------
 # Globals (loaded on startup)

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../src/apiConfig";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([
@@ -49,7 +50,7 @@ export default function Chatbot() {
         console.error("Failed to read cached disease result", e);
       }
 
-      const response = await fetch("/api/chat", {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

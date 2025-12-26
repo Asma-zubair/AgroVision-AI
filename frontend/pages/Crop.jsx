@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../src/apiConfig";
 
 export default function Crop() {
   const SOIL_TYPES = ["Sandy", "Loamy", "Clay", "Black", "Red"];
@@ -26,7 +27,7 @@ export default function Crop() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("/api/predict-crop", {
+      const response = await fetch(`${API_BASE_URL}/predict-crop`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
