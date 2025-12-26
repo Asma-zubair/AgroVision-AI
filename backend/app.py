@@ -89,6 +89,18 @@ def clean_name(name: str):
     return name.replace("_", " ").strip()
 
 # -------------------------------------------------
+# Health Check & Root
+# -------------------------------------------------
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
+
+
+@app.get("/")
+def root():
+    return {"message": "Smart Agriculture API is running"}
+
+# -------------------------------------------------
 # Crop Recommendation Endpoint
 # -------------------------------------------------
 
